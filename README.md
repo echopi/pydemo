@@ -16,3 +16,10 @@ source ENV/bin/activate
 
 deactivate
 ```
+
+## freeze
+
+```sh
+pip freeze > requirements.txt
+pip install -r requirements.txt
+```
