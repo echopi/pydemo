@@ -16,13 +16,17 @@ def test():
     'debug': debug == 'true'
   })
 
-@app.route('/', methods=['GET'])
+@app.route('/api/home', methods=['GET'])
 def home():
   if request.method == 'POST':
     abort(404)
   return jsonify({
     'home': True
   })
+
+@app.route('/')
+def hello():
+    return 'Hello, World!'
 
 if __name__ == '__main__':
     errorlogHandler = RotatingFileHandler('error.log', maxBytes=100000, backupCount=1)
