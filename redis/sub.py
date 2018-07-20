@@ -1,15 +1,18 @@
 # -*- coding:utf-8 -*-
 
 import redis
+from config import redis_config
 
 def my_handler(message):
-  print message.channel, message.data
+  print message
 
-r = redis.StrictRedis(host='localhost', port=6379)
+
+r = redis.StrictRedis(**redis_config)
 
 p = r.pubsub()
 
 p.subscribe(**{'foo': my_handler })
+p.subscribe(**{'lighthouse': my_handler })
 
 # while True:
 #   message = p.get_message()
