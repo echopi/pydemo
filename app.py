@@ -5,6 +5,7 @@ from logging.handlers import RotatingFileHandler
 
 from flask import request, abort, jsonify
 from flask import Flask
+import requests
 
 
 app = Flask(__name__)
@@ -48,24 +49,43 @@ def home():
     'home': True
   })
 
+@app.route('/api/wx', methods=['GET'])
+def wx():
+  appid = request.args.get('appid')
+  secret = request.args.get('secret')
+
+  headers = {
+    'accept': 'application/json',
+    'content-type': 'application/json',
+  }
+  uri = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s' % (appid, secret)
+
+  response = requests.get(uri, headers=headers)
+  if (response.ok):
+    return jsonify(response.json())
+
+  return jsonify({
+    'msg': 'error'
+  })
+
 @app.route('/')
 def hello():
     return 'Hello, World!'
 
 if __name__ == '__main__':
-    errorlogHandler = RotatingFileHandler('error.log', maxBytes=100000, backupCount=1)
-    errorlogHandler.setLevel(logging.INFO)
-    app.logger.addHandler(errorlogHandler)
+  errorlogHandler = RotatingFileHandler('error.log', maxBytes=100000, backupCount=1)
+  errorlogHandler.setLevel(logging.INFO)
+  app.logger.addHandler(errorlogHandler)
 
-    accessHandler = RotatingFileHandler('access.log', maxBytes=100000, backupCount=1)
-    log = logging.getLogger('werkzeug')
-    log.setLevel(logging.INFO)
-    log.addHandler(accessHandler)
-    
-    # logging.basicConfig(filename='error.log',level=logging.DEBUG)
-    # logger = logging.getLogger('werkzeug')
-    # handler = logging.FileHandler('access.log')
-    # logger.addHandler(handler)
-    # app.logger.addHandler(handler)
+  accessHandler = RotatingFileHandler('access.log', maxBytes=100000, backupCount=1)
+  log = logging.getLogger('werkzeug')
+  log.setLevel(logging.INFO)
+  log.addHandler(accessHandler)
+  
+  # logging.basicConfig(filename='error.log',level=logging.DEBUG)
+  # logger = logging.getLogger('werkzeug')
+  # handler = logging.FileHandler('access.log')
+  # logger.addHandler(handler)
+  # app.logger.addHandler(handler)
 
-    app.run(host="0.0.0.0", debug=True)
+  app.run(host="0.0.0.0", debug=True)
