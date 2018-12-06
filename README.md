@@ -24,6 +24,13 @@ pip freeze > requirements.txt
 pip install -r requirements.txt
 ```
 
+## update pakages
+
+```sh
+# pip install pur
+pur -r requirements.txt
+```
+
 ## start app
 
 ```sh
